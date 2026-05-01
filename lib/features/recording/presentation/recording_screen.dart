@@ -30,6 +30,7 @@ class RecordingScreen extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
               _buildVisualizer(state),
@@ -65,14 +66,16 @@ class RecordingScreen extends ConsumerWidget {
     final timeString =
         hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
 
-    return Text(
-      timeString,
-      style: const TextStyle(
-        color: AppColors.textPrimary,
-        fontSize: 52,
-        fontWeight: FontWeight.w200,
-        letterSpacing: -1,
-        fontFeatures: [FontFeature.tabularFigures()],
+    return Center(
+      child: Text(
+        timeString,
+        style: const TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 52,
+          fontWeight: FontWeight.w200,
+          letterSpacing: -1,
+          fontFeatures: [FontFeature.tabularFigures()],
+        ),
       ),
     );
   }
@@ -86,12 +89,16 @@ class RecordingScreen extends ConsumerWidget {
     };
 
     if (state.errorMessage != null) {
-      return Text(state.errorMessage!,
-          style: const TextStyle(color: AppColors.error, fontSize: 14));
+      return Center(
+        child: Text(state.errorMessage!,
+            style: const TextStyle(color: AppColors.error, fontSize: 14)),
+      );
     }
 
-    return Text(text,
-        style: TextStyle(color: color, fontSize: 15));
+    return Center(
+      child: Text(text,
+          style: TextStyle(color: color, fontSize: 15)),
+    );
   }
 
   Widget _buildControls(
