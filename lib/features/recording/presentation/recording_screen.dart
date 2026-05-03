@@ -6,6 +6,11 @@ import '../domain/recording_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../transcription/presentation/transcription_screen.dart';
 
+part 'views/recording_visualizer_view.dart';
+part 'views/recording_timer_view.dart';
+part 'views/recording_status_text_view.dart';
+part 'views/recording_controls_view.dart';
+
 class RecordingScreen extends ConsumerWidget {
   const RecordingScreen({super.key});
 
@@ -33,13 +38,13 @@ class RecordingScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
-              _buildVisualizer(state),
+              _VisualizerView(state: state),
               const SizedBox(height: 32),
-              _buildTimer(state),
+              _TimerView(state: state),
               const SizedBox(height: 12),
-              _buildStatusText(state),
+              _StatusTextView(state: state),
               const Spacer(flex: 3),
-              _buildControls(context, ref, state),
+              _ControlsView(state: state),
               const SizedBox(height: 48),
             ],
           ),
@@ -47,118 +52,8 @@ class RecordingScreen extends ConsumerWidget {
       ),
     );
   }
-
-  Widget _buildVisualizer(RecordingState state) {
-    return SizedBox(
-      height: 120,
-      child: state.isRecording
-          ? const _PulsingWaveform()
-          : _IdleCircle(isPaused: state.isPaused),
-    );
-  }
-
-  Widget _buildTimer(RecordingState state) {
-    final d = state.duration;
-    final hours = d.inHours;
-    final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-
-    final timeString =
-        hours > 0 ? '$hours:$minutes:$seconds' : '$minutes:$seconds';
-
-    return Center(
-      child: Text(
-        timeString,
-        style: const TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 52,
-          fontWeight: FontWeight.w200,
-          letterSpacing: -1,
-          fontFeatures: [FontFeature.tabularFigures()],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusText(RecordingState state) {
-    final (text, color) = switch (state.status) {
-      RecordingStatus.idle => ('Tap to record', AppColors.textSecondary),
-      RecordingStatus.recording => ('Recording...', AppColors.primary),
-      RecordingStatus.paused => ('Paused', AppColors.textSecondary),
-      RecordingStatus.stopped => ('Processing...', AppColors.success),
-    };
-
-    if (state.errorMessage != null) {
-      return Center(
-        child: Text(state.errorMessage!,
-            style: const TextStyle(color: AppColors.error, fontSize: 14)),
-      );
-    }
-
-    return Center(
-      child: Text(text,
-          style: TextStyle(color: color, fontSize: 15)),
-    );
-  }
-
-  Widget _buildControls(
-      BuildContext context, WidgetRef ref, RecordingState state) {
-    final controller = ref.read(recordingControllerProvider.notifier);
-
-    if (state.isIdle) {
-      return _RecordButton(
-        onTap: () => controller.startRecording(),
-      );
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Cancel
-        _CircleButton(
-          icon: Icons.close_rounded,
-          color: AppColors.surface2,
-          size: 56,
-          onTap: () => controller.cancelRecording(),
-        ),
-        const SizedBox(width: 24),
-
-        // Pause / Resume
-        _CircleButton(
-          icon: state.isRecording
-              ? Icons.pause_rounded
-              : Icons.mic_rounded,
-          color: AppColors.primary.withOpacity(0.15),
-          iconColor: AppColors.primary,
-          size: 72,
-          onTap: () => state.isRecording
-              ? controller.pauseRecording()
-              : controller.resumeRecording(),
-        ),
-        const SizedBox(width: 24),
-
-        // Stop → transcribe
-        _CircleButton(
-          icon: Icons.stop_rounded,
-          color: AppColors.success.withOpacity(0.15),
-          iconColor: AppColors.success,
-          size: 56,
-          onTap: () async {
-            final path = await controller.stopRecording();
-            if (path != null && context.mounted) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TranscriptionScreen(audioPath: path),
-                ),
-              );
-            }
-            controller.reset();
-          },
-        ),
-      ],
-    );
-  }
 }
+
 
 // Pulsing waveform animation while recording
 class _PulsingWaveform extends StatefulWidget {

@@ -6,6 +6,10 @@ import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../recording/presentation/recording_screen.dart';
 
+part 'views/model_header_view.dart';
+part 'views/model_section_view.dart';
+part 'views/model_continue_button_view.dart';
+
 class ModelManagerScreen extends ConsumerWidget {
   const ModelManagerScreen({super.key});
 
@@ -22,97 +26,14 @@ class ModelManagerScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
-              _buildHeader(),
+              const _HeaderView(),
               const SizedBox(height: 48),
-              _buildModelSection(context, models, ref),
+              _ModelSectionView(models: models),
               const Spacer(),
-              if (isReady) _buildContinueButton(context),
+              if (isReady) const _ContinueButtonView(),
               const SizedBox(height: 16),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.mic_rounded,
-                  color: AppColors.primary, size: 24),
-            ),
-            const SizedBox(width: 12),
-            const Text(
-              'Scriva',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.5,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          'AI models setup',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Scriva runs entirely on your device.\nDownload the models once and work offline forever.',
-          style: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 14,
-            height: 1.6,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildModelSection(
-      BuildContext context, List<ModelInfo> models, WidgetRef ref) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Required',
-          style: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.2,
-          ),
-        ),
-        const SizedBox(height: 12),
-        ...models.map((model) => _ModelCard(model: model)),
-      ],
-    );
-  }
-
-  Widget _buildContinueButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: AppButton(
-        label: 'Continue to Scriva',
-        icon: Icons.arrow_forward_rounded,
-        onTap: () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const RecordingScreen()),
         ),
       ),
     );

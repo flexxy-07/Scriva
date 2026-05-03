@@ -49,8 +49,30 @@ class CleanupRepository {
               }
             ]
           }
-        ]
+        ],
+        'generationConfig' : {
+          'temperature' : 0.3,
+          'maxOutputTokens' : 2040,
+        }
       })
-    )
+    );
+
+    final candidates = response.data['candidates'] as List?;
+
+    if(candidates == null || candidates.isEmpty){
+      throw Exception(
+        'No response from the Gemini'
+      );
+    }
+
+    final text = candidates[0]['content']['parts'][0]['text'] as String?;
+
+    if(text == null || text.trim().isEmpty){
+      throw Exception(
+        'Empty response from Gemini'
+      );
+    }
+
+    return text.trim();
   }
 }
