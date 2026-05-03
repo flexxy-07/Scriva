@@ -6,29 +6,53 @@ import 'transcription_controller.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../cleanup/presentation/cleanup_screen.dart';
+import '../../history/presentation/history_controller.dart';
+import '../../history/domain/transcript_entry.dart';
 
 part 'views/transcription_transcribing_view.dart';
 part 'views/transcription_done_view.dart';
 part 'views/transcription_error_view.dart';
 
-void _copyToClipboard(BuildContext context, String text) {
-  Clipboard.setData(ClipboardData(text: text));
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Copied to clipboard'),
-      backgroundColor: AppColors.surface2,
-      duration: Duration(seconds: 2),
-    ),
-  );
-}
-
-class TranscriptionScreen extends ConsumerWidget {
+class TranscriptionScreen extends ConsumerStatefulWidget {
   final String audioPath;
-  const TranscriptionScreen({super.key, required this.audioPath});
+  final TransciptEntry? savedEntry;
+  final int? recordingDurationSeconds;
+
+  const TranscriptionScreen({
+    super.key,
+    required this.audioPath,
+    this.savedEntry,
+    this.recordingDurationSeconds,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(transcriptionControllerProvider(audioPath));
+  ConsumerState<TranscriptionScreen> createState() =>
+      _TranscriptionScreenState();
+}
+
+class _TranscriptionScreenState
+    extends ConsumerState<TranscriptionScreen> {
+  bool _saved = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final state =
+        ref.watch(transcriptionControllerProvider(widget.audioPath));
+
+    // Auto-save when transcription completes
+    if (state.isDone && !_saved && widget.savedEntry == null) {
+      _saved = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final entry = TransciptEntry()
+          ..audioPath = widget.audioPath
+          ..rawTranscript = state.rawTranscript!
+          ..createdAt = DateTime.now()
+          ..durationSeconds = widget.recordingDurationSeconds ?? 0;
+        await ref
+            .read(historyControllerProvider.notifier)
+            .saveTranscript(entry);
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -40,11 +64,10 @@ class TranscriptionScreen extends ConsumerWidget {
         actions: [
           if (state.isDone)
             IconButton(
-              icon: const Icon(
-                Icons.copy_rounded,
-                color: AppColors.textSecondary,
-              ),
-              onPressed: () => _copyToClipboard(context, state.rawTranscript!),
+              icon: const Icon(Icons.copy_rounded,
+                  color: AppColors.textSecondary),
+              onPressed: () =>
+                  _copyToClipboard(context, state.rawTranscript!),
             ),
         ],
       ),
@@ -52,21 +75,33 @@ class TranscriptionScreen extends ConsumerWidget {
         child: switch (state.status) {
           TranscriptionStatus.idle => const SizedBox.shrink(),
           TranscriptionStatus.transcribing => const _TranscribingView(),
-          TranscriptionStatus.done => _DoneView(audioPath: audioPath, state: state),
-          TranscriptionStatus.error => _ErrorView(audioPath: audioPath, state: state),
+          TranscriptionStatus.done =>
+            _DoneView(audioPath: widget.audioPath, state: state),
+          TranscriptionStatus.error =>
+            _ErrorView(audioPath: widget.audioPath, state: state),
         },
+      ),
+    );
+  }
+
+  void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Copied to clipboard'),
+        backgroundColor: AppColors.surface2,
+        duration: Duration(seconds: 2),
       ),
     );
   }
 }
 
-
-// Animated transcribing indicator
 class _TranscribingAnimation extends StatefulWidget {
   const _TranscribingAnimation();
 
   @override
-  State<_TranscribingAnimation> createState() => _TranscribingAnimationState();
+  State<_TranscribingAnimation> createState() =>
+      _TranscribingAnimationState();
 }
 
 class _TranscribingAnimationState extends State<_TranscribingAnimation>
@@ -101,12 +136,14 @@ class _TranscribingAnimationState extends State<_TranscribingAnimation>
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.primary, width: 3),
           gradient: SweepGradient(
-            colors: [AppColors.primary.withOpacity(0), AppColors.primary],
+            colors: [
+              AppColors.primary.withOpacity(0),
+              AppColors.primary,
+            ],
           ),
         ),
-        child: const Center(
-          child: Icon(Icons.mic_rounded, color: AppColors.primary, size: 28),
-        ),
+        child: const Icon(Icons.mic_rounded,
+            color: AppColors.primary, size: 28),
       ),
     );
   }
@@ -135,17 +172,12 @@ class _OutlineButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(icon, color: AppColors.textSecondary, size: 16),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-              ),
-            ),
+            Text(label,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 14)),
           ],
         ),
       ),

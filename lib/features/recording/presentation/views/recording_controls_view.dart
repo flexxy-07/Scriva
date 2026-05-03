@@ -48,11 +48,18 @@ class _ControlsView extends ConsumerWidget {
           iconColor: AppColors.success,
           size: 56,
           onTap: () async {
+            final duration = ref
+                .read(recordingControllerProvider)
+                .duration
+                .inSeconds;
             final path = await controller.stopRecording();
             if (path != null && context.mounted) {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => TranscriptionScreen(audioPath: path),
+                  builder: (_) => TranscriptionScreen(
+                    audioPath: path,
+                    recordingDurationSeconds: duration,
+                  ),
                 ),
               );
             }

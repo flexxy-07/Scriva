@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import '../domain/recording_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../transcription/presentation/transcription_screen.dart';
+import '../../history/presentation/history_screen.dart';
 
 part 'views/recording_visualizer_view.dart';
 part 'views/recording_timer_view.dart';
@@ -26,7 +27,9 @@ class RecordingScreen extends ConsumerWidget {
             icon: const Icon(Icons.history_rounded,
                 color: AppColors.textSecondary),
             onPressed: () {
-              // History screen — coming in Step 5
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+              );
             },
           ),
         ],
