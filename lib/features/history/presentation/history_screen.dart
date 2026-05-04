@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scriva/shared/widgets/export_sheet.dart';
 import 'history_controller.dart';
 import '../domain/history_state.dart';
 import '../domain/transcript_entry.dart';
@@ -202,6 +203,7 @@ class _TranscriptCard extends StatelessWidget {
       onDismissed: (_) => onDelete(),
       child: GestureDetector(
         onTap: onTap,
+        onLongPress: () => ExportSheet.show(context, entry),
         child: Container(
           margin: const EdgeInsets.only(bottom: 10),
           padding: const EdgeInsets.all(16),
@@ -258,6 +260,15 @@ class _TranscriptCard extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
+                  GestureDetector(
+                    onTap: () => ExportSheet.show(context, entry),
+                    child: const Icon(
+                      Icons.upload_outlined,
+                      color: AppColors.textSecondary,
+                      size: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   if (entry.cleanedTranscript != null)
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -287,10 +298,12 @@ class _TranscriptCard extends StatelessWidget {
   String _formatDate(DateTime dt) {
     final now = DateTime.now();
     final diff = now.difference(dt);
-    if (diff.inSeconds < 60) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
-    if (diff.inDays < 7) return '${diff.inDays}d ago';
-    return '${dt.day}/${dt.month}/${dt.year}';
+    final timeStr = '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+    
+    if (diff.inSeconds < 60) return 'Just now • $timeStr';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago • $timeStr';
+    if (diff.inHours < 24) return '${diff.inHours}h ago • $timeStr';
+    if (diff.inDays < 7) return '${diff.inDays}d ago • $timeStr';
+    return '${dt.day}/${dt.month}/${dt.year} • $timeStr';
   }
 }

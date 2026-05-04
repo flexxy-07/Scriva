@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scriva/features/transcription/domain/transcription.dart';
+import 'package:scriva/shared/widgets/export_sheet.dart';
 import 'transcription_controller.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../cleanup/presentation/cleanup_screen.dart';
 import '../../history/presentation/history_controller.dart';
 import '../../history/domain/transcript_entry.dart';
+import '../../history/data/history_repository.dart';
 
 part 'views/transcription_transcribing_view.dart';
 part 'views/transcription_done_view.dart';

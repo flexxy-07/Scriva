@@ -116,20 +116,28 @@ class _DoneView extends ConsumerWidget {
                   ),
                   const SizedBox(width: 10),
                   Expanded(
-                    child: _OutlineButton(
-                      label: 'Save',
-                      icon: Icons.save_outlined,
-                      onTap: () {
-                        // History save — coming Step 5
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Save to history coming next!'),
-                            backgroundColor: AppColors.surface2,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+  child: _OutlineButton(
+    label: 'Export',
+    icon: Icons.upload_outlined,
+    onTap: () async {
+      // Get saved entry from history
+      final entries = await ref
+          .read(historyRepositoryProvider)
+          .getAllTranscipts();
+      final entry = entries.firstWhere(
+        (e) => e.audioPath == audioPath,
+        orElse: () => TransciptEntry()
+          ..audioPath = audioPath
+          ..rawTranscript = state.rawTranscript!
+          ..createdAt = DateTime.now()
+          ..durationSeconds = 0,
+      );
+      if (context.mounted) {
+        ExportSheet.show(context, entry);
+      }
+    },
+  ),
+),
                 ],
               ),
             ],
