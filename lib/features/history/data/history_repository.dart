@@ -25,7 +25,7 @@ class HistoryRepository {
     final db = await DatabaseService.instance;
     final all = await db.transciptEntrys.where().sortByCreatedAt().findAll();
 
-    final q = query.toUpperCase();
+    final q = query.toLowerCase();
     return all.where((e) => e.rawTranscript.toLowerCase().contains(q) || (e.cleanedTranscript?.toLowerCase().contains(q) ?? false)).toList();
   }
 
