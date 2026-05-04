@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scriva/core/constants/model_constants.dart';
 import 'package:scriva/features/models/data/model_repo.dart';
 import 'package:scriva/features/models/domain/model_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ModelController extends StateNotifier<List<ModelInfo>>{
   final ModelRepo _repo;
@@ -14,15 +15,25 @@ class ModelController extends StateNotifier<List<ModelInfo>>{
   ];
 
   Future<void> _checkExistingModels() async {
-    for (final model in state) {
-      final isDownloaded = await _repo.isModelDownloaded(model.fileName);
-      _updateModel(
-        model.fileName,
-        status: isDownloaded ? ModelStatus.downloaded : ModelStatus.notDownloaded,
-        progress: isDownloaded ? 1.0 : 0.0,
-      );
+    final updated = <ModelInfo>[];
+    bool anyReady = false;
+    for (final model in state){
+      final exists = await _repo.isModelDownloaded(model.fileName);
+      if(exists) anyReady = true;
+      updated.add(model.copyWith(
+        status: exists ? ModelStatus.downloaded : ModelStatus.notDownloaded
+      ));
+    }
+    state = updated;
+
+    //persist
+    if(anyReady){
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('whisper_model_ready', true);
     }
   }
+
+  
 
   Future<void> downloadModel(String fileName) async {
     _updateModel(fileName, status: ModelStatus.downloading, progress: 0.0);
@@ -38,6 +49,8 @@ class ModelController extends StateNotifier<List<ModelInfo>>{
         },
       );
       _updateModel(fileName, status: ModelStatus.downloaded, progress: 1.0);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('whisper_model_ready', true);
     } catch (e) {
       _updateModel(
         fileName,

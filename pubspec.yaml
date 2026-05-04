@@ -52,6 +52,9 @@ dependencies:
   isar_generator: ^3.1.0+1
   flutter_dotenv: ^6.0.1
   share_plus: ^12.0.2
+  flutter_native_splash: ^2.4.7
+  shared_preferences: ^2.5.5
+  package_info_plus: ^9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +70,13 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+# Flutter Native Splash Configuration
+flutter_native_splash:
+  color: "0F0F13"
+  image: assets/splash_icon.png
+  android: true
+  ios: false
+
 flutter:
 
   # The following line ensures that the Material Icons font is
