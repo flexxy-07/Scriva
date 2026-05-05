@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scriva/features/history/presentation/history_screen.dart';
 import 'package:scriva/features/recording/presentation/recording_screen.dart';
+import 'package:scriva/features/settings/presentation/settings_screen.dart';
 import 'package:scriva/shared/theme/app_theme.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -14,7 +15,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedIndex = 0;
 
-  final _screens = const [RecordingScreen(), HistoryScreen(), SettingScreen()];
+  final _screens = const [RecordingScreen(), HistoryScreen(), SettingsScreen()];
 
   @override
   Widget build(BuildContext context) {

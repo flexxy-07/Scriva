@@ -1,5 +1,4 @@
 part of '../model_manager_screen.dart';
-import '../../home/presentation/home_screen.dart';
 class _ContinueButtonView extends StatelessWidget {
   const _ContinueButtonView();
 

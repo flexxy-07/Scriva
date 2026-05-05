@@ -22,17 +22,6 @@ class RecordingScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Scriva'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history_rounded,
-                color: AppColors.textSecondary),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const HistoryScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Padding(

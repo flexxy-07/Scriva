@@ -54,4 +54,11 @@ class HistoryRepository {
     return await db.transciptEntrys.count();
   }
 
+  Future<void> deleteAllTranscripts() async {
+    final db = await DatabaseService.instance;
+    await db.writeTxn(() async {
+      await db.transciptEntrys.clear();
+    });
+  }
+
 }

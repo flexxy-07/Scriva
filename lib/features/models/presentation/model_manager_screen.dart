@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scriva/features/home/presentation/home_screen.dart';
 import 'package:scriva/features/models/presentation/model_controller.dart';
 import '../domain/model_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
-import '../../recording/presentation/recording_screen.dart';
 
 part 'views/model_header_view.dart';
 part 'views/model_section_view.dart';

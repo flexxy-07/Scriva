@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scriva/app/router.dart';
+import 'package:scriva/features/home/presentation/home_screen.dart';
 import 'package:scriva/features/models/presentation/model_manager_screen.dart';
+import 'package:scriva/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:scriva/shared/theme/app_theme.dart';
 import 'package:scriva/shared/widgets/loading_indicator.dart';
 
@@ -22,12 +24,12 @@ class ScrivaApp extends ConsumerWidget {
         AppRouter.onBoarding => const OnboardingScreen(),
         AppRouter.modelSetup => const ModelManagerScreen(),
         _ => const HomeScreen(),
-      }, error: (_, __) => const HomeScreen(), loading: () => const Scaffold(
+      }, error: (_,_) => const HomeScreen(), loading: () => const Scaffold(
         body: Center(
           child: LoadingIndicator(),
         ),
       )),
-    )
+    );
 
   }
 }

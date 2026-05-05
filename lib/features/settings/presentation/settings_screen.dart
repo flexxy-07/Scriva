@@ -5,6 +5,8 @@ import 'package:scriva/features/models/presentation/model_manager_screen.dart';
 import 'package:scriva/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:scriva/shared/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:scriva/features/history/data/history_repository.dart';
+import 'package:scriva/features/history/presentation/history_controller.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -67,7 +69,7 @@ class SettingsScreen extends ConsumerWidget {
               title: 'Clear All Data',
               subtitle: 'Delete all transcripts and recordings',
               titleColor: AppColors.error,
-              onTap: () => _confirmClearData(context),
+              onTap: () => _confirmClearData(context, ref),
             ),
           ],
         ),
