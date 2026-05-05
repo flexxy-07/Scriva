@@ -156,6 +156,12 @@ Future<Map<String, dynamic>> _getStorageInfo() async {
     }
   }
 
+  if (await recordingDir.exists()){
+    await for (final f in recordingDir.list()){
+      if (f is File) recordingsCount++;
+    }
+  }
+
   final mb = (modelsSize / (1024 * 1024)).toStringAsFixed(0);
     return {
       'models': '${mb}MB',
