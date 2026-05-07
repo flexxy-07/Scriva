@@ -10,6 +10,7 @@ class ModelInfo {
   final String fileName;
   final String url;
   final int sizeMb;
+  final bool isRequired;
   final ModelStatus status;
   final double downloadProgress;
   final String? errorMessage;
@@ -19,6 +20,7 @@ class ModelInfo {
     required this.fileName,
     required this.url,
     required this.sizeMb,
+    this.isRequired = false,
     this.status = ModelStatus.notDownloaded,
     this.downloadProgress = 0.0,
     this.errorMessage,
@@ -30,6 +32,7 @@ class ModelInfo {
     String? errorMessage,
   }){
     return ModelInfo(name: name, fileName: fileName, url: url, sizeMb: sizeMb,
+    isRequired: isRequired,
     status: status ?? this.status,
     downloadProgress: downloadProgress ?? this.downloadProgress,
     errorMessage: errorMessage ?? this.errorMessage

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:scriva/core/services/settings_service.dart';
 import 'package:scriva/features/models/presentation/model_manager_screen.dart';
 import 'package:scriva/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:scriva/shared/theme/app_theme.dart';
@@ -13,6 +14,7 @@ import 'package:path/path.dart' as p;
 
 part './views/dialogbox_dart.dart';
 part './views/section_header.dart';
+part './views/engine_selector.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -25,7 +27,8 @@ class SettingsScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _SectionHeader(label: 'AI MODELS'),
+            _SectionHeader(label: 'CLEANUP ENGINE'),
+            _EngineSelectorTile(),
             _SettingsTile(
               icon: Icons.memory_rounded,
               title: 'Manage Models',

@@ -13,8 +13,11 @@ class ModelConstants {
   static const int whisperTinySize = 75;
   static const int whisperBaseSize = 150;
 
-  // static const String tinyLlamaUrl =
-  //     'https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf';
-  // static const String tinyLlamaName = 'tinyllama-q4.gguf';
-  // static const int tinyLlamaSize = 400; 
+  // offline model : Gemma
+  static const String gemma3_1bUrl = 'https://github.com/flexxy-07/scriva-models/releases/download/v1-models/gemma3-1b-it-int4.task';
+
+  static const String gemma3_1bName = 'gemma3-1b-it-int4.task';
+
+  static const String gemma3_1bModelId = 'gemma3-1b-it-int4';
+  static const int gemma3_1bSize = 530;
 }

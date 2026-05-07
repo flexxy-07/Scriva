@@ -11,7 +11,15 @@ class ModelController extends StateNotifier<List<ModelInfo>>{
   }
 
   static List<ModelInfo> _initialModels() => [
-    ModelInfo(name: 'Whisper Tiny', fileName: ModelConstants.whisperTinyName, url: ModelConstants.whisperTinyUrl, sizeMb: ModelConstants.whisperTinySize),
+    ModelInfo(name: 'Whisper Tiny', fileName: ModelConstants.whisperTinyName, url: ModelConstants.whisperTinyUrl, sizeMb: ModelConstants.whisperTinySize, isRequired: true),
+
+    ModelInfo(
+    name: 'Gemma 3 1B',
+    fileName: ModelConstants.gemma3_1bName,
+    url: ModelConstants.gemma3_1bUrl,
+    sizeMb: ModelConstants.gemma3_1bSize,
+    isRequired: false,
+  ),
   ];
 
   Future<void> _checkExistingModels() async {

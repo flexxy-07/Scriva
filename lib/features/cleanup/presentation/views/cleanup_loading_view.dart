@@ -1,12 +1,14 @@
 part of '../cleanup_screen.dart';
 
-class _LoadingView extends StatelessWidget {
+class _LoadingView extends ConsumerWidget {
   final CleanupState state;
 
   const _LoadingView({required this.state});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final engine = ref.watch(settingsServiceProvider);
+    final engineLabel = engine == CleanupEngine.local ? 'Running On Device' : 'Gemini Processing';
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
