@@ -97,7 +97,7 @@ class _TechnicalWaveformState extends State<_TechnicalWaveform>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (_, __) {
+      builder: (context, child) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,7 +151,7 @@ class _TechnicalMicIndicator extends StatelessWidget {
               child: Container(
                 width: 8,
                 height: 8,
-                color: AppColors.textSecondary.withOpacity(0.3),
+                color: AppColors.textSecondary.withValues(alpha: 0.3),
               ),
             ),
         ],

@@ -6,6 +6,7 @@ import '../domain/history_state.dart';
 import '../domain/transcript_entry.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../transcription/presentation/transcription_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -29,19 +30,30 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History'),
+        title: Text(
+          'ARCHIVE',
+          style: GoogleFonts.spaceGrotesk(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            _buildSearchBar(),
+            _buildTechnicalSearchBar(),
             Expanded(
               child: switch (state.status) {
                 HistoryStatus.idle ||
                 HistoryStatus.loading =>
                   const Center(
-                    child: CircularProgressIndicator(
-                        color: AppColors.primary),
+                    child: SizedBox(
+                      width: 100,
+                      height: 2,
+                      child: LinearProgressIndicator(color: AppColors.primary),
+                    ),
                   ),
                 HistoryStatus.empty => _buildEmpty(),
                 HistoryStatus.loaded => _buildList(state.entries),
@@ -54,22 +66,27 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildTechnicalSearchBar() {
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.surface2, width: 1),
       ),
       child: TextField(
         controller: _searchController,
-        style: const TextStyle(color: AppColors.textPrimary),
-        decoration: const InputDecoration(
-          hintText: 'Search transcripts...',
-          hintStyle: TextStyle(color: AppColors.textSecondary),
+        style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+        decoration: InputDecoration(
+          hintText: 'SEARCH TRANSCRIPTS...',
+          hintStyle: GoogleFonts.spaceGrotesk(
+            color: AppColors.textSecondary.withOpacity(0.5),
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0,
+          ),
           border: InputBorder.none,
-          icon: Icon(Icons.search_rounded, color: AppColors.textSecondary),
+          icon: const Icon(Icons.search, color: AppColors.textSecondary, size: 20),
         ),
         onChanged: (q) =>
             ref.read(historyControllerProvider.notifier).search(q),
@@ -79,7 +96,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
   Widget _buildList(List<TransciptEntry> entries) {
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: entries.length,
       itemBuilder: (_, i) => _TranscriptCard(
         entry: entries[i],
@@ -103,21 +120,17 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.history_rounded,
-              color: AppColors.textSecondary.withOpacity(0.4), size: 64),
-          const SizedBox(height: 16),
-          const Text(
-            'No transcripts yet',
-            style: TextStyle(
+          Icon(Icons.history,
+              color: AppColors.surface2, size: 64),
+          const SizedBox(height: 24),
+          Text(
+            'ARCHIVE EMPTY',
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.textSecondary,
-              fontSize: 16,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 2.0,
             ),
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            'Your recordings will appear here',
-            style:
-                TextStyle(color: AppColors.textSecondary, fontSize: 13),
           ),
         ],
       ),
@@ -129,17 +142,29 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded,
+          const Icon(Icons.error_outline,
               color: AppColors.error, size: 48),
-          const SizedBox(height: 12),
-          const Text('Failed to load history',
-              style: TextStyle(color: AppColors.textSecondary)),
           const SizedBox(height: 16),
+          Text(
+            'ERROR LOADING HISTORY',
+            style: GoogleFonts.spaceGrotesk(
+              color: AppColors.error,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 24),
           TextButton(
             onPressed: () =>
                 ref.read(historyControllerProvider.notifier).loadHistory(),
-            child: const Text('Retry',
-                style: TextStyle(color: AppColors.primary)),
+            child: Text(
+              'RETRY',
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+            ),
           ),
         ],
       ),
@@ -160,56 +185,16 @@ class _TranscriptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key('entry_${entry.id}'),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        margin: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: const Icon(Icons.delete_outline_rounded,
-            color: AppColors.error),
-      ),
-      confirmDismiss: (_) async {
-        return await showDialog<bool>(
-          context: context,
-          builder: (_) => AlertDialog(
-            backgroundColor: AppColors.surface,
-            title: const Text('Delete transcript?',
-                style: TextStyle(color: AppColors.textPrimary)),
-            content: const Text(
-              'This cannot be undone.',
-              style: TextStyle(color: AppColors.textSecondary),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel',
-                    style: TextStyle(color: AppColors.textSecondary)),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Delete',
-                    style: TextStyle(color: AppColors.error)),
-              ),
-            ],
-          ),
-        );
-      },
-      onDismissed: (_) => onDelete(),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
       child: GestureDetector(
         onTap: onTap,
         onLongPress: () => ExportSheet.show(context, entry),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.surface2, width: 1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,71 +203,66 @@ class _TranscriptCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      entry.title,
-                      style: const TextStyle(
+                      entry.title.toUpperCase(),
+                      style: GoogleFonts.spaceGrotesk(
                         color: AppColors.textPrimary,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.5,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   Text(
                     entry.formattedDuration,
-                    style: const TextStyle(
+                    style: GoogleFonts.spaceGrotesk(
                       color: AppColors.textSecondary,
-                      fontSize: 12,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 12),
               Text(
                 entry.rawTranscript,
-                style: const TextStyle(
+                style: GoogleFonts.inter(
                   color: AppColors.textSecondary,
                   fontSize: 13,
-                  height: 1.5,
+                  height: 1.6,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Text(
-                    _formatDate(entry.createdAt),
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
+                    _formatDate(entry.createdAt).toUpperCase(),
+                    style: GoogleFonts.spaceGrotesk(
+                      color: AppColors.textSecondary.withOpacity(0.6),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.0,
                     ),
                   ),
                   const Spacer(),
-                  GestureDetector(
-                    onTap: () => ExportSheet.show(context, entry),
-                    child: const Icon(
-                      Icons.upload_outlined,
-                      color: AppColors.textSecondary,
-                      size: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
                   if (entry.cleanedTranscript != null)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: AppColors.success.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(6),
+                          horizontal: 8, vertical: 4),
+                      decoration: const BoxDecoration(
+                        color: AppColors.success,
                       ),
-                      child: const Text(
-                        '✨ cleaned',
-                        style: TextStyle(
-                          color: AppColors.success,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
+                      child: Text(
+                        'CLEANED',
+                        style: GoogleFonts.spaceGrotesk(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.0,
                         ),
                       ),
                     ),
@@ -296,14 +276,6 @@ class _TranscriptCard extends StatelessWidget {
   }
 
   String _formatDate(DateTime dt) {
-    final now = DateTime.now();
-    final diff = now.difference(dt);
-    final timeStr = '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
-    
-    if (diff.inSeconds < 60) return 'Just now • $timeStr';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago • $timeStr';
-    if (diff.inHours < 24) return '${diff.inHours}h ago • $timeStr';
-    if (diff.inDays < 7) return '${diff.inDays}d ago • $timeStr';
-    return '${dt.day}/${dt.month}/${dt.year} • $timeStr';
+    return '${dt.day}/${dt.month}/${dt.year} • ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
   }
 }

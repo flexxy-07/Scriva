@@ -14,48 +14,46 @@ class _IdleView extends ConsumerWidget {
         children: [
           const Spacer(),
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.surface2, width: 1),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Raw transcript preview',
-                  style: TextStyle(
+                Text(
+                  'RAW SOURCE PREVIEW',
+                  style: GoogleFonts.spaceGrotesk(
                     color: AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 Text(
-                  rawTranscript.length > 200
-                      ? '${rawTranscript.substring(0, 200)}...'
+                  rawTranscript.length > 300
+                      ? '${rawTranscript.substring(0, 300)}...'
                       : rawTranscript,
-                  style: const TextStyle(
+                  style: GoogleFonts.inter(
                     color: AppColors.textPrimary,
                     fontSize: 14,
-                    height: 1.6,
+                    height: 1.7,
                   ),
                 ),
               ],
             ),
           ),
           const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              label: 'Clean with ${state.selectedMode.label}',
-              icon: Icons.auto_fix_high_rounded,
-              onTap: () => ref
-                  .read(cleanupControllerProvider(rawTranscript).notifier)
-                  .runCleanup(),
-            ),
+          AppButton(
+            label: 'Process with ${state.selectedMode.label}',
+            icon: Icons.auto_fix_high_outlined,
+            onTap: () => ref
+                .read(cleanupControllerProvider(rawTranscript).notifier)
+                .runCleanup(),
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );

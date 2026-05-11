@@ -7,55 +7,59 @@ class _TranscribingView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch state to get progress message
-    final state = ref.watch(
-        transcriptionControllerProvider(audioPath));
+    final state = ref.watch(transcriptionControllerProvider(audioPath));
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const _TranscribingAnimation(),
-          const SizedBox(height: 24),
-          const Text(
-            'Transcribing...',
-            style: TextStyle(
+          const TechnicalPulseAnimation(),
+          const SizedBox(height: 32),
+          Text(
+            'ENGINE ACTIVE',
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
             child: Text(
-              state.progressMessage,
+              state.progressMessage.toUpperCase(),
               key: ValueKey(state.progressMessage),
-              style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 13),
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.0,
+              ),
             ),
           ),
-          const SizedBox(height: 32),
-          // Tip while waiting
+          const SizedBox(height: 48),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 32),
-            padding: const EdgeInsets.all(16),
+            margin: const EdgeInsets.symmetric(horizontal: 48),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.surface2, width: 1),
             ),
-            child: const Row(
+            child: Row(
               children: [
-                Icon(Icons.lock_outline_rounded,
+                const Icon(Icons.security_outlined,
                     color: AppColors.primary, size: 16),
-                SizedBox(width: 10),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    'Processing entirely on your device.\nNo data leaves your phone.',
-                    style: TextStyle(
+                    'LOCAL PROCESSING ACTIVE. DATA PERSISTED ON SECURE LOCAL STORAGE.',
+                    style: GoogleFonts.spaceGrotesk(
                       color: AppColors.textSecondary,
-                      fontSize: 12,
-                      height: 1.5,
+                      fontSize: 9,
+                      height: 1.6,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),

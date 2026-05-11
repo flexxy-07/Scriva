@@ -7,6 +7,8 @@ import '../domain/cleanup_mode.dart';
 import '../domain/cleanup_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import 'package:scriva/shared/widgets/technical_animations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 part 'views/cleanup_idle_view.dart';
 part 'views/cleanup_loading_view.dart';
@@ -16,10 +18,17 @@ part 'views/cleanup_error_view.dart';
 void _copyToClipboard(BuildContext context, String text) {
   Clipboard.setData(ClipboardData(text: text));
   ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text('Copied to clipboard'),
+    SnackBar(
+      content: Text(
+        'COPIED TO CLIPBOARD',
+        style: GoogleFonts.spaceGrotesk(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.0,
+        ),
+      ),
       backgroundColor: AppColors.surface2,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     ),
   );
 }
@@ -34,12 +43,20 @@ class CleanupScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Cleanup'),
+        title: Text(
+          'AI CLEANUP MODULE',
+          style: GoogleFonts.spaceGrotesk(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           if (state.isDone)
             IconButton(
-              icon: const Icon(Icons.copy_rounded,
-                  color: AppColors.textSecondary),
+              icon: const Icon(Icons.content_copy,
+                  color: AppColors.textSecondary, size: 20),
               onPressed: () =>
                   _copyToClipboard(context, state.cleanedText!),
             ),
@@ -75,36 +92,39 @@ class _ModeSelector extends ConsumerWidget {
         ref.read(cleanupControllerProvider(rawTranscript).notifier);
 
     return Container(
-      height: 48,
-      color: AppColors.surface,
+      height: 56,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          bottom: BorderSide(color: AppColors.surface2, width: 1),
+        ),
+      ),
       child: ListView(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         children: CleanupMode.values.map((mode) {
           final isSelected = state.selectedMode == mode;
           return GestureDetector(
             onTap: () => controller.selectMode(mode),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 8),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+            child: Container(
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primary
-                    : AppColors.surface2,
-                borderRadius: BorderRadius.circular(16),
+                color: isSelected ? AppColors.primary : Colors.transparent,
+                border: Border.all(
+                  color: isSelected ? AppColors.primary : AppColors.surface2,
+                  width: 1,
+                ),
               ),
-              child: Text(
-                '${mode.icon} ${mode.label}',
-                style: TextStyle(
-                  color: isSelected
-                      ? Colors.white
-                      : AppColors.textSecondary,
-                  fontSize: 13,
-                  fontWeight: isSelected
-                      ? FontWeight.w600
-                      : FontWeight.w400,
+              child: Center(
+                child: Text(
+                  mode.label.toUpperCase(),
+                  style: GoogleFonts.spaceGrotesk(
+                    color: isSelected ? Colors.white : AppColors.textSecondary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                  ),
                 ),
               ),
             ),
@@ -131,19 +151,24 @@ class _OutlineButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.surface2),
-          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.surface2, width: 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: AppColors.textSecondary, size: 16),
-            const SizedBox(width: 6),
-            Text(label,
-                style: const TextStyle(
-                    color: AppColors.textSecondary, fontSize: 14)),
+            Icon(icon, color: AppColors.textSecondary, size: 18),
+            const SizedBox(width: 12),
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+            ),
           ],
         ),
       ),

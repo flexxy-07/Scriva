@@ -15,32 +15,35 @@ class _ErrorView extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
-              Icons.error_outline_rounded,
+              Icons.error_outline_outlined,
               color: AppColors.error,
               size: 48,
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Transcription failed',
-              style: TextStyle(
+            const SizedBox(height: 24),
+            Text(
+              'TRANSCRIPTION FAILED',
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textPrimary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              state.errorMessage ?? 'Something went wrong',
-              style: const TextStyle(
+              (state.errorMessage ?? 'UNKNOWN SYSTEM ERROR').toUpperCase(),
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             AppButton(
-              label: 'Try Again',
-              icon: Icons.refresh_rounded,
+              label: 'Retry Engine',
+              icon: Icons.refresh_outlined,
               onTap: () => ref
                   .read(transcriptionControllerProvider(audioPath).notifier)
                   .retry(),

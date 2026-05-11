@@ -9,12 +9,16 @@ class _DoneView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header bar
+        // Header info
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          color: AppColors.surface,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: const BoxDecoration(
+            color: AppColors.surface,
+            border: Border(
+              bottom: BorderSide(color: AppColors.surface2, width: 1),
+            ),
+          ),
           child: Row(
             children: [
               Container(
@@ -22,38 +26,44 @@ class _DoneView extends ConsumerWidget {
                   horizontal: 10,
                   vertical: 4,
                 ),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(6),
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
                 ),
-                child: const Text(
+                child: Text(
                   'RAW',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.2,
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 16),
               Text(
-                '${state.rawTranscript!.split(' ').length} words',
-                style: const TextStyle(
+                '${state.rawTranscript!.split(' ').length} WORDS',
+                style: GoogleFonts.spaceGrotesk(
                   color: AppColors.textSecondary,
-                  fontSize: 13,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
               ),
               const Spacer(),
-              const Icon(
-                Icons.lock_outline_rounded,
+              Icon(
+                Icons.lock_outline,
                 color: AppColors.textSecondary,
                 size: 14,
               ),
-              const SizedBox(width: 4),
-              const Text(
-                'on-device',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              const SizedBox(width: 6),
+              Text(
+                'ON-DEVICE',
+                style: GoogleFonts.spaceGrotesk(
+                  color: AppColors.textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
+                ),
               ),
             ],
           ),
@@ -62,13 +72,13 @@ class _DoneView extends ConsumerWidget {
         // Transcript text
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(32),
             child: SelectableText(
               state.rawTranscript!,
-              style: const TextStyle(
+              style: GoogleFonts.inter(
                 color: AppColors.textPrimary,
                 fontSize: 16,
-                height: 1.7,
+                height: 1.8,
               ),
             ),
           ),
@@ -76,68 +86,61 @@ class _DoneView extends ConsumerWidget {
 
         // Bottom actions
         Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
             color: AppColors.surface,
             border: Border(
-              top: BorderSide(
-                color: AppColors.surface2.withOpacity(0.5),
-                width: 1,
-              ),
+              top: BorderSide(color: AppColors.surface2, width: 1),
             ),
           ),
           child: Column(
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  label: 'Clean with AI',
-                  icon: Icons.auto_fix_high_rounded,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            CleanupScreen(rawTranscript: state.rawTranscript!),
-                      ),
-                    );
-                  },
-                ),
+              AppButton(
+                label: 'Clean with AI',
+                icon: Icons.auto_fix_high_outlined,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          CleanupScreen(rawTranscript: state.rawTranscript!),
+                    ),
+                  );
+                },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: _OutlineButton(
                       label: 'Copy',
-                      icon: Icons.copy_rounded,
+                      icon: Icons.content_copy,
                       onTap: () =>
                           _copyToClipboard(context, state.rawTranscript!),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
-  child: _OutlineButton(
-    label: 'Export',
-    icon: Icons.upload_outlined,
-    onTap: () async {
-      // Get saved entry from history
-      final entries = await ref
-          .read(historyRepositoryProvider)
-          .getAllTranscipts();
-      final entry = entries.firstWhere(
-        (e) => e.audioPath == audioPath,
-        orElse: () => TransciptEntry()
-          ..audioPath = audioPath
-          ..rawTranscript = state.rawTranscript!
-          ..createdAt = DateTime.now()
-          ..durationSeconds = 0,
-      );
-      if (context.mounted) {
-        ExportSheet.show(context, entry);
-      }
-    },
-  ),
-),
+                    child: _OutlineButton(
+                      label: 'Export',
+                      icon: Icons.upload,
+                      onTap: () async {
+                        final entries = await ref
+                            .read(historyRepositoryProvider)
+                            .getAllTranscipts();
+                        final entry = entries.firstWhere(
+                          (e) => e.audioPath == audioPath,
+                          orElse: () => TransciptEntry()
+                            ..audioPath = audioPath
+                            ..rawTranscript = state.rawTranscript!
+                            ..createdAt = DateTime.now()
+                            ..durationSeconds = 0,
+                        );
+                        if (context.mounted) {
+                          ExportSheet.show(context, entry);
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -146,12 +149,20 @@ class _DoneView extends ConsumerWidget {
       ],
     );
   }
+
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        duration: Duration(seconds: 2),
+      SnackBar(
+        content: Text(
+          'COPIED TO CLIPBOARD',
+          style: GoogleFonts.spaceGrotesk(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        backgroundColor: AppColors.surface2,
       ),
     );
-  }}
+  }
+}

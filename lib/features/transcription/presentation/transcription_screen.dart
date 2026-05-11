@@ -9,6 +9,8 @@ import '../../../shared/widgets/app_button.dart';
 import '../../cleanup/presentation/cleanup_screen.dart';
 import '../../history/presentation/history_controller.dart';
 import '../../history/domain/transcript_entry.dart';
+import 'package:scriva/shared/widgets/technical_animations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 part 'views/transcription_transcribing_view.dart';
 part 'views/transcription_done_view.dart';
@@ -40,7 +42,6 @@ class _TranscriptionScreenState
     final state =
         ref.watch(transcriptionControllerProvider(widget.audioPath));
 
-    // Auto-save when transcription completes
     if (state.isDone && !_saved && widget.savedEntry == null) {
       _saved = true;
       WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -57,16 +58,24 @@ class _TranscriptionScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transcript'),
+        title: Text(
+          'TRANSCRIPT',
+          style: GoogleFonts.spaceGrotesk(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(Icons.arrow_back, size: 20),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           if (state.isDone)
             IconButton(
-              icon: const Icon(Icons.copy_rounded,
-                  color: AppColors.textSecondary),
+              icon: const Icon(Icons.content_copy,
+                  color: AppColors.textSecondary, size: 20),
               onPressed: () =>
                   _copyToClipboard(context, state.rawTranscript!),
             ),
@@ -88,63 +97,17 @@ class _TranscriptionScreenState
   void _copyToClipboard(BuildContext context, String text) {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Copied to clipboard'),
-        backgroundColor: AppColors.surface2,
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-}
-
-class _TranscribingAnimation extends StatefulWidget {
-  const _TranscribingAnimation();
-
-  @override
-  State<_TranscribingAnimation> createState() =>
-      _TranscribingAnimationState();
-}
-
-class _TranscribingAnimationState extends State<_TranscribingAnimation>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _rotation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-    _rotation = Tween(begin: 0.0, end: 1.0).animate(_controller);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RotationTransition(
-      turns: _rotation,
-      child: Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.primary, width: 3),
-          gradient: SweepGradient(
-            colors: [
-              AppColors.primary.withOpacity(0),
-              AppColors.primary,
-            ],
+      SnackBar(
+        content: Text(
+          'COPIED TO CLIPBOARD',
+          style: GoogleFonts.spaceGrotesk(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.0,
           ),
         ),
-        child: const Icon(Icons.mic_rounded,
-            color: AppColors.primary, size: 28),
+        backgroundColor: AppColors.surface2,
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -166,19 +129,24 @@ class _OutlineButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.surface2),
-          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.surface2, width: 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: AppColors.textSecondary, size: 16),
-            const SizedBox(width: 6),
-            Text(label,
-                style: const TextStyle(
-                    color: AppColors.textSecondary, fontSize: 14)),
+            Icon(icon, color: AppColors.textSecondary, size: 18),
+            const SizedBox(width: 12),
+            Text(
+              label.toUpperCase(),
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+              ),
+            ),
           ],
         ),
       ),

@@ -12,44 +12,54 @@ class _DoneView extends ConsumerWidget {
       children: [
         // Badge bar
         Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          color: AppColors.surface,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: const BoxDecoration(
+            color: AppColors.surface,
+            border: Border(
+              bottom: BorderSide(color: AppColors.surface2, width: 1),
+            ),
+          ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.success.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(6),
+                decoration: const BoxDecoration(
+                  color: AppColors.success,
                 ),
                 child: Text(
                   state.selectedMode.label.toUpperCase(),
-                  style: const TextStyle(
-                    color: AppColors.success,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1.1,
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 16),
               Text(
-                '${state.cleanedText!.split(' ').length} words',
-                style: const TextStyle(
-                    color: AppColors.textSecondary, fontSize: 13),
+                '${state.cleanedText!.split(' ').length} WORDS',
+                style: GoogleFonts.spaceGrotesk(
+                  color: AppColors.textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                ),
               ),
               const Spacer(),
               GestureDetector(
                 onTap: () => ref
-                    .read(cleanupControllerProvider(rawTranscript)
-                        .notifier)
+                    .read(cleanupControllerProvider(rawTranscript).notifier)
                     .reset(),
-                child: const Text(
-                  'Try another mode',
-                  style: TextStyle(
-                      color: AppColors.primary, fontSize: 12),
+                child: Text(
+                  'RESET ENGINE',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: AppColors.primary,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                  ),
                 ),
               ),
             ],
@@ -59,13 +69,13 @@ class _DoneView extends ConsumerWidget {
         // Cleaned text
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(32),
             child: SelectableText(
               state.cleanedText!,
-              style: const TextStyle(
+              style: GoogleFonts.inter(
                 color: AppColors.textPrimary,
                 fontSize: 16,
-                height: 1.75,
+                height: 1.8,
               ),
             ),
           ),
@@ -73,34 +83,38 @@ class _DoneView extends ConsumerWidget {
 
         // Actions
         Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
             color: AppColors.surface,
             border: Border(
-              top: BorderSide(
-                  color: AppColors.surface2.withOpacity(0.5)),
+              top: BorderSide(color: AppColors.surface2, width: 1),
             ),
           ),
           child: Row(
             children: [
               Expanded(
                 child: _OutlineButton(
-                  label: 'Copy',
-                  icon: Icons.copy_rounded,
+                  label: 'Copy Result',
+                  icon: Icons.content_copy,
                   onTap: () =>
                       _copyToClipboard(context, state.cleanedText!),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
                 child: _OutlineButton(
-                  label: 'Share',
-                  icon: Icons.share_rounded,
+                  label: 'Share Module',
+                  icon: Icons.share,
                   onTap: () {
-                    // Share — coming Step 7
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Share coming soon!'),
+                      SnackBar(
+                        content: Text(
+                          'SHARE MODULE INITIALIZING...',
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                         backgroundColor: AppColors.surface2,
                       ),
                     );

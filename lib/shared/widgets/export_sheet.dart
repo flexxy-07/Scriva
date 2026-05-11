@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/services/export_service.dart';
-import '../../features/history/domain/transcript_entry.dart';
-import '../theme/app_theme.dart';
+import 'package:scriva/core/services/export_service.dart';
+import 'package:scriva/features/history/domain/transcript_entry.dart';
+import 'package:scriva/shared/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ExportSheet extends ConsumerStatefulWidget {
   final TransciptEntry entry;
 
   const ExportSheet({super.key, required this.entry});
 
-  static Future<void> show(BuildContext context, TransciptEntry entry) {
-    return showModalBottomSheet(
+  static void show(BuildContext context, TransciptEntry entry) {
+    showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (_) => ExportSheet(entry: entry),
     );
   }
@@ -38,99 +37,92 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
   Widget build(BuildContext context) {
     final hasCleaned = widget.entry.cleanedTranscript != null;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: const BoxDecoration(
+        color: AppColors.background,
+        border: Border(
+          top: BorderSide(color: AppColors.primary, width: 2),
+        ),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Handle
-          Center(
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.surface2,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          const Text(
-            'Export Transcript',
-            style: TextStyle(
+          Text(
+            'EXPORT MODULE',
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.textPrimary,
               fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 32),
 
           if (hasCleaned) ...[
             Container(
               decoration: BoxDecoration(
-                color: AppColors.surface2,
-                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.surface2, width: 1),
               ),
               child: Row(
                 children: [
                   _VersionTab(
-                    label: 'Raw',
+                    label: 'RAW',
                     isSelected: !_useCleaned,
                     onTap: () => setState(() => _useCleaned = false),
                   ),
                   _VersionTab(
-                    label: '✨ Cleaned',
+                    label: 'CLEANED',
                     isSelected: _useCleaned,
                     onTap: () => setState(() => _useCleaned = true),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
           ],
 
-          // Format options
-          const Text(
-            'FORMAT',
-            style: TextStyle(
+          Text(
+            'OUTPUT FORMAT',
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              letterSpacing: 1.2,
+              letterSpacing: 1.5,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
           Row(
             children: [
               Expanded(
                 child: _FormatCard(
-                  label: 'Plain Text',
-                  ext: '.txt',
-                  icon: Icons.text_snippet_outlined,
+                  label: 'PLAIN TEXT',
+                  ext: '.TXT',
+                  icon: Icons.text_snippet,
                   isLoading: _isExporting,
                   onTap: () => _export(ExportFormat.txt),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 16),
               Expanded(
                 child: _FormatCard(
-                  label: 'Markdown',
-                  ext: '.md',
-                  icon: Icons.code_rounded,
+                  label: 'MARKDOWN',
+                  ext: '.MD',
+                  icon: Icons.code,
                   isLoading: _isExporting,
                   onTap: () => _export(ExportFormat.markdown),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 24),
 
           _QuickShareButton(
             onTap: _isExporting ? null : () => _shareText(),
           ),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -150,7 +142,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export failed: $e'),
+            content: Text('EXPORT FAILED: $e'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -166,7 +158,7 @@ class _ExportSheetState extends ConsumerState<ExportSheet> {
         : widget.entry.rawTranscript;
     await ref
         .read(exportServiceProvider)
-        .shareText(text, 'Scriva — ${widget.entry.title}');
+        .shareText(text, 'SCRIVA - ${widget.entry.title}');
   }
 }
 
@@ -186,24 +178,19 @@ class _VersionTab extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.all(4),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isSelected
-                  ? Colors.white
-                  : AppColors.textSecondary,
-              fontSize: 14,
-              fontWeight:
-                  isSelected ? FontWeight.w600 : FontWeight.w400,
+            style: GoogleFonts.spaceGrotesk(
+              color: isSelected ? Colors.white : AppColors.textSecondary,
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.0,
             ),
           ),
         ),
@@ -232,10 +219,9 @@ class _FormatCard extends StatelessWidget {
     return GestureDetector(
       onTap: isLoading ? null : onTap,
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppColors.surface2,
-          borderRadius: BorderRadius.circular(14),
+          color: AppColors.surface,
           border: Border.all(
             color: AppColors.surface2,
             width: 1,
@@ -246,7 +232,7 @@ class _FormatCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: AppColors.primary, size: 22),
+                Icon(icon, color: AppColors.primary, size: 20),
                 const Spacer(),
                 if (isLoading)
                   const SizedBox(
@@ -258,24 +244,26 @@ class _FormatCard extends StatelessWidget {
                     ),
                   )
                 else
-                  const Icon(Icons.share_rounded,
-                      color: AppColors.textSecondary, size: 16),
+                  const Icon(Icons.share,
+                      color: AppColors.textSecondary, size: 14),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
             Text(
               label,
-              style: const TextStyle(
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
               ),
             ),
             Text(
               ext,
-              style: const TextStyle(
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textSecondary,
-                fontSize: 12,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -295,23 +283,23 @@ class _QuickShareButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors.surface2),
-          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.surface2, width: 1),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.ios_share_rounded,
+            const Icon(Icons.share,
                 color: AppColors.textSecondary, size: 18),
-            SizedBox(width: 8),
+            const SizedBox(width: 12),
             Text(
-              'Share as text',
-              style: TextStyle(
+              'SHARE AS RAW TEXT',
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textSecondary,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
               ),
             ),
           ],

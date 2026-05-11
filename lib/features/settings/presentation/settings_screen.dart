@@ -11,6 +11,7 @@ import 'package:scriva/features/history/presentation/history_controller.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:google_fonts/google_fonts.dart';
 
 part './views/dialogbox_dart.dart';
 part './views/section_header.dart';
@@ -22,53 +23,59 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(
+        title: Text(
+          'CONFIGURATION',
+          style: GoogleFonts.spaceGrotesk(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           children: [
-            _SectionHeader(label: 'CLEANUP ENGINE'),
-            _EngineSelectorTile(),
+            const _SectionHeader(label: 'CLEANUP ENGINE'),
+            const _EngineSelectorTile(),
             _SettingsTile(
-              icon: Icons.memory_rounded,
+              icon: Icons.memory,
               title: 'Manage Models',
               subtitle: 'Download or remove AI Models',
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const ModelManagerScreen()),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
-            // storage
-            _SectionHeader(label: 'Storage'),
+            const _SectionHeader(label: 'STORAGE'),
             _StorageTile(),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
-            //about
-            _SectionHeader(label: 'ABOUT'),
+            const _SectionHeader(label: 'ABOUT'),
             _VersionTile(),
             _SettingsTile(
-              icon: Icons.privacy_tip_outlined,
+              icon: Icons.privacy_tip,
               title: 'Privacy',
               subtitle: 'All data stays on your device',
               onTap: () => _showPrivacyDialog(context),
             ),
-
             _SettingsTile(
-              icon: Icons.replay_rounded,
+              icon: Icons.replay,
               title: 'Replay Onboarding',
               subtitle: 'See the intro screens again',
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const OnboardingScreen()),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
-            // Danger zone
-            _SectionHeader(label: 'DANGER ZONE'),
+            const _SectionHeader(label: 'DANGER ZONE'),
             _SettingsTile(
-              icon: Icons.delete_forever_rounded,
+              icon: Icons.delete_forever,
               title: 'Clear All Data',
               subtitle: 'Delete all transcripts and recordings',
               titleColor: AppColors.error,

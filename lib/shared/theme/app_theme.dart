@@ -75,7 +75,8 @@ class AppTheme {
           color: AppColors.surface,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.zero,
+            side: BorderSide(color: AppColors.surface2, width: 1),
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(

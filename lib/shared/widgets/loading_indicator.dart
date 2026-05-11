@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final String? message;
@@ -10,11 +11,25 @@ class LoadingIndicator extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const CircularProgressIndicator(color: AppColors.primary),
+        SizedBox(
+          width: 200,
+          height: 2,
+          child: LinearProgressIndicator(
+            backgroundColor: AppColors.surface2,
+            color: AppColors.primary,
+          ),
+        ),
         if (message != null) ...[
-          const SizedBox(height: 12),
-          Text(message!,
-              style: const TextStyle(color: AppColors.textSecondary)),
+          const SizedBox(height: 16),
+          Text(
+            message!.toUpperCase(),
+            style: GoogleFonts.spaceGrotesk(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
+          ),
         ]
       ],
     );

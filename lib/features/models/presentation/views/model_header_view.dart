@@ -11,43 +11,46 @@ class _HeaderView extends StatelessWidget {
         Row(
           children: [
             Container(
-              width: 44,
-              height: 44,
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
+                color: AppColors.surface,
+                border: Border.all(color: AppColors.primary, width: 1.5),
               ),
-              child: const Icon(Icons.mic_rounded,
+              child: const Icon(Icons.mic_none,
                   color: AppColors.primary, size: 24),
             ),
-            const SizedBox(width: 12),
-            const Text(
-              'Scriva',
-              style: TextStyle(
+            const SizedBox(width: 16),
+            Text(
+              'SCRIVA',
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.textPrimary,
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.5,
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2.0,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 20),
-        const Text(
-          'AI models setup',
-          style: TextStyle(
+        const SizedBox(height: 32),
+        Text(
+          'AI ENGINE INITIALIZATION',
+          style: GoogleFonts.spaceGrotesk(
             color: AppColors.textPrimary,
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 8),
-        const Text(
-          'Scriva runs entirely on your device.\nDownload the models once and work offline forever.',
-          style: TextStyle(
+        const SizedBox(height: 12),
+        Text(
+          'SECURE LOCAL PROCESSING REQUIRED. DOWNLOAD SYSTEM CORES TO ENABLE OFFLINE ARCHIVING AND TRANSCRIPTION.',
+          style: GoogleFonts.spaceGrotesk(
             color: AppColors.textSecondary,
-            fontSize: 14,
+            fontSize: 10,
             height: 1.6,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
         ),
       ],

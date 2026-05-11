@@ -7,34 +7,40 @@ class _LoadingView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final engine = ref.watch(settingsServiceProvider);
-    final engineLabel = engine == CleanupEngine.local ? 'Running On Device' : 'Gemini Processing';
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
-            width: 48,
-            height: 48,
-            child: CircularProgressIndicator(
-              color: AppColors.primary,
-              strokeWidth: 3,
-            ),
-          ),
-          const SizedBox(height: 20),
+          const TechnicalPulseAnimation(),
+          const SizedBox(height: 32),
           Text(
-            'Applying ${state.selectedMode.label}...',
-            style: const TextStyle(
+            'ENGINE ACTIVE',
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.textPrimary,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 6),
-          const Text(
-            'Gemini is cleaning your transcript',
-            style:
-                TextStyle(color: AppColors.textSecondary, fontSize: 13),
+          const SizedBox(height: 12),
+          Text(
+            'APPLYING ${state.selectedMode.label.toUpperCase()} MODULE...',
+            style: GoogleFonts.spaceGrotesk(
+              color: AppColors.textSecondary,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.0,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'GEMINI CORE PROCESSING TRANSCRIPT',
+            style: GoogleFonts.spaceGrotesk(
+              color: AppColors.textSecondary.withOpacity(0.6),
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
           ),
         ],
       ),

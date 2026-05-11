@@ -1,4 +1,5 @@
 part of '../model_manager_screen.dart';
+
 class _ContinueButtonView extends StatelessWidget {
   const _ContinueButtonView();
 
@@ -7,8 +8,8 @@ class _ContinueButtonView extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: AppButton(
-        label: 'Continue to Scriva',
-        icon: Icons.arrow_forward_rounded,
+        label: 'INITIALIZE SYSTEM',
+        icon: Icons.power_settings_new,
         onTap: () => Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
         ),
