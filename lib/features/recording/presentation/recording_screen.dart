@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import '../domain/recording_state.dart';
 import '../../../shared/theme/app_theme.dart';
 import '../../transcription/presentation/transcription_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 part 'views/recording_visualizer_view.dart';
 part 'views/recording_timer_view.dart';
@@ -20,23 +21,31 @@ class RecordingScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scriva'),
+        title: Text(
+          'SCRIVA',
+          style: GoogleFonts.spaceGrotesk(
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
+            fontSize: 16,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
               _VisualizerView(state: state),
-              const SizedBox(height: 32),
+              const SizedBox(height: 48),
               _TimerView(state: state),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
               _StatusTextView(state: state),
               const Spacer(flex: 3),
               _ControlsView(state: state),
-              const SizedBox(height: 48),
+              const SizedBox(height: 64),
             ],
           ),
         ),
@@ -45,16 +54,15 @@ class RecordingScreen extends ConsumerWidget {
   }
 }
 
-
-// Pulsing waveform animation while recording
-class _PulsingWaveform extends StatefulWidget {
-  const _PulsingWaveform();
+// Technical Waveform Visualizer
+class _TechnicalWaveform extends StatefulWidget {
+  const _TechnicalWaveform();
 
   @override
-  State<_PulsingWaveform> createState() => _PulsingWaveformState();
+  State<_TechnicalWaveform> createState() => _TechnicalWaveformState();
 }
 
-class _PulsingWaveformState extends State<_PulsingWaveform>
+class _TechnicalWaveformState extends State<_TechnicalWaveform>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   final _random = math.Random();
@@ -63,15 +71,15 @@ class _PulsingWaveformState extends State<_PulsingWaveform>
   @override
   void initState() {
     super.initState();
-    _heights = List.generate(32, (_) => 0.3 + _random.nextDouble() * 0.7);
+    _heights = List.generate(24, (_) => 0.1 + _random.nextDouble() * 0.9);
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 300),
     )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           setState(() {
             _heights =
-                List.generate(32, (_) => 0.2 + _random.nextDouble() * 0.8);
+                List.generate(24, (_) => 0.1 + _random.nextDouble() * 0.9);
           });
           _controller.forward(from: 0);
         }
@@ -95,14 +103,13 @@ class _PulsingWaveformState extends State<_PulsingWaveform>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(_heights.length, (i) {
             return AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 2),
-              width: 4,
-              height: 20 + (_heights[i] * 80),
-              decoration: BoxDecoration(
-                color: AppColors.primary
-                    .withOpacity(0.4 + _heights[i] * 0.6),
-                borderRadius: BorderRadius.circular(4),
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 3),
+              width: 6,
+              height: 10 + (_heights[i] * 100),
+              decoration: const BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.zero, // Sharp corners
               ),
             );
           }),
@@ -112,124 +119,124 @@ class _PulsingWaveformState extends State<_PulsingWaveform>
   }
 }
 
-// Idle / paused circle
-class _IdleCircle extends StatefulWidget {
+// Technical Mic Indicator (Square)
+class _TechnicalMicIndicator extends StatelessWidget {
   final bool isPaused;
-  const _IdleCircle({required this.isPaused});
-
-  @override
-  State<_IdleCircle> createState() => _IdleCircleState();
-}
-
-class _IdleCircleState extends State<_IdleCircle>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-    _scale = Tween(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  const _TechnicalMicIndicator({required this.isPaused});
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scale,
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: widget.isPaused
-              ? AppColors.primary.withOpacity(0.1)
-              : AppColors.surface,
-          border: Border.all(
-            color: widget.isPaused
-                ? AppColors.primary.withOpacity(0.4)
-                : AppColors.surface2,
-            width: 1.5,
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border.all(
+          color: isPaused ? AppColors.primary : AppColors.surface2,
+          width: 2,
+        ),
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Icon(
+            isPaused ? Icons.pause_outlined : Icons.mic_none_outlined,
+            color: isPaused ? AppColors.primary : AppColors.textSecondary,
+            size: 48,
           ),
-        ),
-        child: Icon(
-          widget.isPaused ? Icons.pause_rounded : Icons.mic_none_rounded,
-          color: widget.isPaused
-              ? AppColors.primary
-              : AppColors.textSecondary,
-          size: 40,
-        ),
-      ),
-    );
-  }
-}
-
-// Big record button for idle state
-class _RecordButton extends StatelessWidget {
-  final VoidCallback onTap;
-  const _RecordButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 88,
-        height: 88,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.primary,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.35),
-              blurRadius: 24,
-              spreadRadius: 4,
+          if (!isPaused)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Container(
+                width: 8,
+                height: 8,
+                color: AppColors.textSecondary.withOpacity(0.3),
+              ),
             ),
-          ],
-        ),
-        child: const Icon(Icons.mic_rounded, color: Colors.white, size: 38),
+        ],
       ),
     );
   }
 }
 
-class _CircleButton extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final Color? iconColor;
-  final double size;
+// Square Action Button
+class _SquareActionButton extends StatelessWidget {
   final VoidCallback onTap;
+  final IconData icon;
+  final Color backgroundColor;
+  final Color iconColor;
+  final double size;
+  final String? label;
 
-  const _CircleButton({
-    required this.icon,
-    required this.color,
+  const _SquareActionButton({
     required this.onTap,
-    required this.size,
-    this.iconColor,
+    required this.icon,
+    this.backgroundColor = AppColors.surface,
+    this.iconColor = AppColors.textPrimary,
+    this.size = 64,
+    this.label,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+              border: Border.all(
+                color: AppColors.surface2,
+                width: 1,
+              ),
+            ),
+            child: Icon(icon, color: iconColor, size: size * 0.4),
+          ),
+          if (label != null) ...[
+            const SizedBox(height: 8),
+            Text(
+              label!.toUpperCase(),
+              style: GoogleFonts.spaceGrotesk(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.0,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// Technical Record Button
+class _TechnicalRecordButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _TechnicalRecordButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
       child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-        child: Icon(icon,
-            color: iconColor ?? AppColors.textSecondary,
-            size: size * 0.42),
+        width: 80,
+        height: 80,
+        decoration: const BoxDecoration(
+          color: AppColors.primary,
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.mic_none_rounded,
+            color: Colors.white,
+            size: 32,
+          ),
+        ),
       ),
     );
   }

@@ -8,10 +8,10 @@ class _VisualizerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 120,
+      height: 160,
       child: state.isRecording
-          ? const _PulsingWaveform()
-          : _IdleCircle(isPaused: state.isPaused),
+          ? const _TechnicalWaveform()
+          : _TechnicalMicIndicator(isPaused: state.isPaused),
     );
   }
 }

@@ -8,22 +8,36 @@ class _StatusTextView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (text, color) = switch (state.status) {
-      RecordingStatus.idle => ('Tap to record', AppColors.textSecondary),
-      RecordingStatus.recording => ('Recording...', AppColors.primary),
-      RecordingStatus.paused => ('Paused', AppColors.textSecondary),
-      RecordingStatus.stopped => ('Processing...', AppColors.success),
+      RecordingStatus.idle => ('READY TO RECORD', AppColors.textSecondary),
+      RecordingStatus.recording => ('RECORDING ACTIVE', AppColors.primary),
+      RecordingStatus.paused => ('RECORDING PAUSED', AppColors.textSecondary),
+      RecordingStatus.stopped => ('PROCESSING AUDIO', AppColors.success),
     };
 
     if (state.errorMessage != null) {
       return Center(
-        child: Text(state.errorMessage!,
-            style: const TextStyle(color: AppColors.error, fontSize: 14)),
+        child: Text(
+          state.errorMessage!.toUpperCase(),
+          style: GoogleFonts.spaceGrotesk(
+            color: AppColors.error,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0,
+          ),
+        ),
       );
     }
 
     return Center(
-      child: Text(text,
-          style: TextStyle(color: color, fontSize: 15)),
+      child: Text(
+        text,
+        style: GoogleFonts.spaceGrotesk(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.5,
+        ),
+      ),
     );
   }
 }

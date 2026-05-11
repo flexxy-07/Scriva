@@ -18,12 +18,12 @@ class _TimerView extends StatelessWidget {
     return Center(
       child: Text(
         timeString,
-        style: const TextStyle(
+        style: GoogleFonts.spaceGrotesk(
           color: AppColors.textPrimary,
-          fontSize: 52,
-          fontWeight: FontWeight.w200,
-          letterSpacing: -1,
-          fontFeatures: [FontFeature.tabularFigures()],
+          fontSize: 64,
+          fontWeight: FontWeight.w500,
+          letterSpacing: -2,
+          fontFeatures: const [FontFeature.tabularFigures()],
         ),
       ),
     );

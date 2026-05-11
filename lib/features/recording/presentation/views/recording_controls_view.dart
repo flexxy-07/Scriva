@@ -10,7 +10,7 @@ class _ControlsView extends ConsumerWidget {
     final controller = ref.read(recordingControllerProvider.notifier);
 
     if (state.isIdle) {
-      return _RecordButton(
+      return _TechnicalRecordButton(
         onTap: () => controller.startRecording(),
       );
     }
@@ -19,34 +19,32 @@ class _ControlsView extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Cancel
-        _CircleButton(
-          icon: Icons.close_rounded,
-          color: AppColors.surface2,
-          size: 56,
+        _SquareActionButton(
+          icon: Icons.close_outlined,
+          label: 'Cancel',
           onTap: () => controller.cancelRecording(),
         ),
-        const SizedBox(width: 24),
+        const SizedBox(width: 32),
 
         // Pause / Resume
-        _CircleButton(
+        _SquareActionButton(
           icon: state.isRecording
-              ? Icons.pause_rounded
-              : Icons.mic_rounded,
-          color: AppColors.primary.withOpacity(0.15),
-          iconColor: AppColors.primary,
+              ? Icons.pause_outlined
+              : Icons.mic_none_outlined,
+          backgroundColor: AppColors.primary,
+          iconColor: Colors.white,
           size: 72,
+          label: state.isRecording ? 'Pause' : 'Resume',
           onTap: () => state.isRecording
               ? controller.pauseRecording()
               : controller.resumeRecording(),
         ),
-        const SizedBox(width: 24),
+        const SizedBox(width: 32),
 
-        // Stop → transcribe
-        _CircleButton(
-          icon: Icons.stop_rounded,
-          color: AppColors.success.withOpacity(0.15),
-          iconColor: AppColors.success,
-          size: 56,
+        // Stop & transcribe
+        _SquareActionButton(
+          icon: Icons.check_outlined,
+          label: 'Finish',
           onTap: () async {
             final duration = ref
                 .read(recordingControllerProvider)
