@@ -31,7 +31,7 @@ class LocalLLMRepository {
     );
 
     final chat = await inferenceModel.createChat(
-      temperature: 0.3,
+      temperature: 0.2,
       topK: 40
     );
     final prompt = '''${mode.prompt}

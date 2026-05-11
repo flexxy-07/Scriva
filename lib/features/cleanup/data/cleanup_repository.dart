@@ -51,8 +51,8 @@ class CleanupRepository {
           }
         ],
         'generationConfig' : {
-          'temperature' : 0.3,
-          'maxOutputTokens' : 2040,
+          'temperature' : 0.2,
+          'maxOutputTokens' : 2048,
         }
       })
     );
